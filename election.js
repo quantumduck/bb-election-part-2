@@ -15,6 +15,7 @@ $(document).ready(function() {
       $('#results').append(candidateItem(candidates[i]));
     }
     bindPostRequests();
+    setTimeout(refresh, 1000);
   }).fail(function() {
     $('#errors').append('<p class="error">[Error loading election results.]</p>');
   }).always(function() {});
@@ -60,8 +61,28 @@ function bindPostRequests() {
       data: $(this).serialize()
     }).done(function(data) {
       console.log(data)
+
     }).fail(function() {
       $('#errors').append('<p class="error">[Voting Error.]</p>');
     }).always();
   });
+}
+
+function refresh() {
+  $.ajax({
+    url: rootURL,
+    method: 'GET',
+    dataType: 'json'
+      // data: { limit: 2, stuff: 4 }
+  }).done(function(data) {
+    var candidates = data.candidates;
+    $('#results > li').each(function(index) {
+      $(this).find('strong').html(candidates[index].name + ':');
+      $(this).find('em').html(candidates[index].votes);
+    });
+    // console.log(data);
+    setTimeout(refresh, 5000);
+  }).fail(function() {
+    $('#errors').append('<p class="error">[Error loading election results.]</p>');
+  }).always(function() {});
 }
