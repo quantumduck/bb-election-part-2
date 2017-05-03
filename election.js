@@ -1,5 +1,6 @@
+var rootURL = 'https://bb-election-api.herokuapp.com/';
+
 $(document).ready(function() {
-  var rootURL = 'https://bb-election-api.herokuapp.com/';
   $('body').css('background-size', '100%');
   $('body').css('background-repeat', 'no-repeat');
   $('body').css('background-image', 'url(images/bikini-bottom.jpg)');
@@ -11,13 +12,7 @@ $(document).ready(function() {
   }).done(function(data) {
     var candidates = data.candidates;
     for (var i = 0; i < candidates.length; i++) {
-      $('#results').append(
-        '<li><strong>' +
-        candidates[i].name +
-        ':</strong> <em>' +
-        candidates[i].votes +
-        '</em></li>'
-      );
+      $('#results').append(candidateItem(candidates[i]));
     }
   }).fail(function() {
     $('#errors').append('<p class="error">[Error loading election results.]</p>');
@@ -32,3 +27,21 @@ $(document).ready(function() {
   // Imagination!
 
 });
+
+function candidateItem(candidate) {
+  var output = $('<li></li>');
+  var voteForm = $('<form method="POST"></form>');
+  var button = $('<input type="submit", value="Vote!">');
+  var hidden = $('<input type="hidden", name="id">');
+  output.html(
+    '<strong>' +
+    candidate.name +
+    ':</strong> <em>' +
+    candidate.votes +
+    '</em>'
+  );
+  voteForm.attr('action', rootURL + 'vote');
+  hidden.val(candidate.id);
+  voteForm.append(hidden).append(button);
+  return output.append(voteForm);
+}
