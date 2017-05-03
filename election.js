@@ -52,6 +52,16 @@ function candidateItem(candidate) {
 function bindPostRequests() {
   $('.vote-form').on('submit', function(e) {
     e.preventDefault();
-    console.log(e);
+    console.log($(this).serialize());
+    $.ajax({
+      url: $(this).attr('action'),
+      method: $(this).attr('method'),
+      dataType: 'json',
+      data: $(this).serialize()
+    }).done(function(data) {
+      console.log(data)
+    }).fail(function() {
+      $('#errors').append('<p class="error">[Voting Error.]</p>');
+    }).always();
   });
 }
