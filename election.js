@@ -14,9 +14,12 @@ $(document).ready(function() {
     for (var i = 0; i < candidates.length; i++) {
       $('#results').append(candidateItem(candidates[i]));
     }
+    bindPostRequests();
   }).fail(function() {
     $('#errors').append('<p class="error">[Error loading election results.]</p>');
   }).always(function() {});
+
+
 
   $('#results').css('list-style', 'none');
   $('#results').css('padding', '0');
@@ -30,7 +33,7 @@ $(document).ready(function() {
 
 function candidateItem(candidate) {
   var output = $('<li></li>');
-  var voteForm = $('<form method="POST"></form>');
+  var voteForm = $('<form method="POST", class="vote-form"></form>');
   var button = $('<input type="submit", value="Vote!">');
   var hidden = $('<input type="hidden", name="id">');
   output.html(
@@ -44,4 +47,11 @@ function candidateItem(candidate) {
   hidden.val(candidate.id);
   voteForm.append(hidden).append(button);
   return output.append(voteForm);
+}
+
+function bindPostRequests() {
+  $('.vote-form').on('submit', function(e) {
+    e.preventDefault();
+    console.log(e);
+  });
 }
